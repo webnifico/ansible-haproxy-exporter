@@ -1,0 +1,11 @@
+---
+haproxy_exporter_bin_dir: "/usr/local/bin"
+haproxy_exporter_system_group: "haproxy-exp"
+haproxy_exporter_system_user: "{{ haproxy_exporter_system_group }}"
+
+haproxy_exporter_enabled: "yes"
+haproxy_exporter_state: "present"
+
+haproxy_exporter_scrape_uri: "unix:/run/haproxy/admin.sock"
+
+haproxy_exporter_version: "0.9.0"

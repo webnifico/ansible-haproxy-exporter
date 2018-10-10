@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: Niko Smeds
+  description: Prometheus HAProxy Exporter
+  license: MIT
+  min_ansible_version: 2.6
+  platforms:
+  - name: Ubuntu
+    versions:
+    - xenial
+  galaxy_tags:
+    - exporter
+    - haproxy
+    - monitoring
+    - prometheus
+dependencies: []
