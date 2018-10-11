@@ -1,4 +1,19 @@
 ---
+- name: install and start haproxy for development node(s)
+  become: true
+  block:
+    - name: install haproxy
+      apt:
+        name: haproxy
+        state: present
+    - name: start haproxy service
+      systemd: 
+        name: haproxy
+        state: started
+        enabled: yes
+  when:
+    - haproxy_exporter_development_node
+
 - name: create haproxy_exporter group
   become: true
   group:
