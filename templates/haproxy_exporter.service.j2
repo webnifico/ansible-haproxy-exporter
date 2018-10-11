@@ -10,6 +10,9 @@ User={{ haproxy_exporter_system_user }}
 Group={{ haproxy_exporter_system_group }}
 Nice=-5
 ExecStart={{ haproxy_exporter_bin_dir}}/haproxy_exporter \
+{% if not haproxy_exporter_validate_ssl %}
+    --no-haproxy.ssl-verify \
+{% endif %}
     --haproxy.scrape-uri="{{ haproxy_exporter_scrape_uri }}"
 SyslogIdentifier=haproxy_exporter
 Restart=always
