@@ -79,3 +79,13 @@
     name: haproxy_exporter
     enabled: "{{ haproxy_exporter_enabled }}"
     state: started
+
+- name: curl haproxy-exporter metrics
+  uri:
+    url: http://localhost:9101/metrics
+    return_content: yes
+  register: metrics
+
+- name: ensure haproxy-exporter successfully collects metrics
+  fail:
+  when: "'haproxy_up 1' not in metrics.content"
