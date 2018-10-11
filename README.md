@@ -1,5 +1,5 @@
 ---
-# Ansible Role: Prometheus RabbitMQ exporter
+# Ansible Role: Prometheus HAProxy exporter
 
 ## Description
 
