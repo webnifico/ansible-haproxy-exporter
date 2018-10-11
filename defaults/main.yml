@@ -1,9 +1,9 @@
 ---
-haproxy_exporter_development_node: false
+haproxy_exporter_development_node: False
 
 haproxy_exporter_bin_dir: "/usr/local/bin"
-haproxy_exporter_system_group: "haproxy-exp"
-haproxy_exporter_system_user: "{{ haproxy_exporter_system_group }}"
+haproxy_exporter_system_group: "haproxy"
+haproxy_exporter_system_user: "haproxy-exp"
 
 haproxy_exporter_enabled: "yes"
 haproxy_exporter_state: "present"
