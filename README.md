@@ -12,7 +12,8 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 ## Example
 
 Example of playbook with default values.
----yaml
+
+---lang=yaml
 - hosts: haproxy
   roles:
     - webnifico.haproxy-exporter
