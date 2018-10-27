@@ -7,8 +7,8 @@ services:
 env:
   - distribution: ubuntu
     version: xenial
-#  - distribution: ubuntu
-#    version: bionic
+  - distribution: ubuntu
+    version: bionic
 
 before_install:
   - 'sudo docker pull ${distribution}:${version}'

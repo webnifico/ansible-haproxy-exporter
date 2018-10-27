@@ -1,5 +1,6 @@
----
 # Ansible Role: Prometheus HAProxy exporter
+
+[![Build Status](https://travis-ci.com/webnifico/ansible-haproxy-exporter.svg?token=ya2jwEdwbzxuostpa2Zr&branch=master)](https://travis-ci.com/webnifico/ansible-haproxy-exporter)
 
 ## Description
 
@@ -16,7 +17,7 @@ Example of playbook with default values.
 ```yaml
 - hosts: haproxy
   roles:
-    - webnifico.haproxy-exporter
+    - webnifico.ansible-haproxy-exporter
 ```
 
 ## Acknowledgements
