@@ -10,10 +10,15 @@ User={{ haproxy_exporter_system_user }}
 Group={{ haproxy_exporter_system_group }}
 Nice=-5
 ExecStart={{ haproxy_exporter_bin_dir}}/haproxy_exporter \
-{% if not haproxy_exporter_validate_ssl %}
+{% if not haproxy_exporter_ssl_verify %}
     --no-haproxy.ssl-verify \
 {% endif %}
-    --haproxy.scrape-uri="{{ haproxy_exporter_scrape_uri }}"
+    --web.listen-address=":{{ haproxy_exporter_listen_port }}" \
+    --haproxy.scrape-uri="{{ haproxy_exporter_scrape_uri }}" \
+    --haproxy.server-metric-fields="{{ haproxy_exporter_server_metric_fields }}" \
+    --haproxy.timeout={{ haproxy_exporter_timeout }} \
+    --haproxy.pid-file="{{ haproxy_exporter_pid_file }}" \
+    --log.level="{{ haproxy_exporter_log_level }}"
 SyslogIdentifier=haproxy_exporter
 Restart=always
 

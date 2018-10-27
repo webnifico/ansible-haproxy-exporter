@@ -1,14 +1,19 @@
 ---
-haproxy_exporter_development_node: False
-
 haproxy_exporter_bin_dir: "/usr/local/bin"
+haproxy_exporter_development_node: False
+haproxy_exporter_listen_port: 9101
+haproxy_exporter_log_level: "info"
+haproxy_exporter_pid_file: ""
+haproxy_exporter_scrape_uri: "unix:/run/haproxy/admin.sock"
+
+# Comma-separated list of exported server metrics. See
+# http://cbonte.github.io/haproxy-dconv/configuration-1.5.html#9.1
+haproxy_exporter_server_metric_fields: "2,3,4,5,6,7,8,9,13,14,15,16,17,18,21,24,33,35,38,39,40,41,42,43,44"
+haproxy_exporter_service_enabled: "yes"
+haproxy_exporter_service_state: "started"
+haproxy_exporter_ssl_verify: True
+haproxy_exporter_state: "present"
 haproxy_exporter_system_group: "haproxy"
 haproxy_exporter_system_user: "haproxy-exp"
-
-haproxy_exporter_enabled: "yes"
-haproxy_exporter_state: "present"
-
-haproxy_exporter_scrape_uri: "unix:/run/haproxy/admin.sock"
-haproxy_exporter_validate_ssl: True
-
+haproxy_exporter_timeout: "5s"
 haproxy_exporter_version: "0.9.0"
