@@ -1,0 +1,32 @@
+---
+- hosts: all
+
+  pre_tasks:
+    - name: ensure build dependencies are installed (RedHat)
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - "@Development tools"
+        - tar
+        - unzip
+        - sudo
+        - which
+      when: ansible_os_family == 'RedHat'
+
+    - name: ensure build dependencies are installed (Debian)
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - build-essential
+        - unzip
+        - tar
+        - sudo
+      when: ansible_os_family == 'Debian'
+
+  tasks:
+  - include_role:
+      name: ansible-haproxy-exporter
+    vars:
+      haproxy_exporter_development_node: True

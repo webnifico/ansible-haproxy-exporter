@@ -1,0 +1,32 @@
+---
+sudo: required
+
+services:
+  - docker
+
+env:
+  - distribution: ubuntu
+    version: xenial
+#  - distribution: ubuntu
+#    version: bionic
+
+before_install:
+  - 'sudo docker pull ${distribution}:${version}'
+  - 'sudo docker build --no-cache --rm --file=travis/Dockerfile.${distribution}-${version} --tag=${distribution}-${version}:ansible travis'
+
+script:
+  - container_id=$(mktemp)
+  - 'sudo docker run --detach --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro --volume="${PWD}":/etc/ansible/roles/ansible-haproxy-exporter:ro ${distribution}-${version}:ansible > "${container_id}"'
+  - 'sudo docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 ansible-playbook -v /etc/ansible/roles/ansible-haproxy-exporter/travis/test.yml --syntax-check'
+  - 'sudo docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 ansible-playbook -v /etc/ansible/roles/ansible-haproxy-exporter/travis/test.yml'
+  - >
+    sudo docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 ansible-playbook -v /etc/ansible/roles/ansible-haproxy-exporter/travis/test.yml
+    | grep -q 'changed=0.*failed=0'
+    && (echo 'Idempotence test: pass' && exit 0)
+    || (echo 'Idempotence test: fail' && exit 1)
+  - 'sudo docker rm -f "$(cat ${container_id})"'
+
+notifications:
+  email: false
+  slack:
+    secure: OoCkeig93WXwnb3bIkXngn6Vuec3Mik3OgmBaAr7ldsqjADL9rn+LhNNRoZssgFxfpDsRL/YELHUHxEZvCfktzweURdjJb4iTqzkhLXSIJqRDL+HJR5pkkhMkxu8LVl5b1bkTUxoNlOSjuYS5IIF/+TKr3uAuWV8nLM3aZ2jGEiUKlZSts0vt8HOG0iqv9v9GX3GNYCGEDtjy3bBqI01a1jZr6ON4zTUtXA6ZMLW3KlUOTfYrRNX+OCMwsDr/WX6F4TD6y2T1Ss4KzOddwGnqP/W/gL/FTF1a2lU2vCwk05rkzEYVnH3RLD5dPT531fdhTpVAtho2h829etYqDnmHUoiPwqsizte/O6XVG8AAej0hKip1d+qiPXxGGWhz7lfa/fg9CYoHsOWUd59tTnfylKPBvntZxw4k8kvWTWoptpU/RUbXJoORV1KnWtMRrWXxMJtykmCzDj+NQPs4YyS4LEokqXhHQVF5+3RkFT4JZp9eU1l7aZ+69rUSyq4xY95jn8qqNeTogny/Knassb0OoEuZ3RGpJYlUdRUd+xXu5i1CT5+d59Eqinyhx443z268pGTpGnMdJuqrWQNwAwT245zh1ASIu0FDkSEK3SA45IdOj9dBB/1LcGL0O5zScWWwueCud14w3l0cNhD+Jj20+Ei3GOsI6wUT0BWw3cfCkQ=
