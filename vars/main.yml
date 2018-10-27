@@ -5,9 +5,3 @@ go_arch_map:
   aarch64: "arm64"
   armv7l: "armv7"
   armv6l: "armv6"
-
-haproxy_exporter_bin_dir: "/usr/local/bin"
-
-haproxy_exporter_service_enabled: "yes"
-haproxy_exporter_service_state: "started"
-haproxy_exporter_state: "present"
