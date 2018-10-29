@@ -5,7 +5,7 @@
   become: true
   block:
     - name: install haproxy
-      apt:
+      package:
         name: haproxy
         state: present
     - name: start haproxy service
