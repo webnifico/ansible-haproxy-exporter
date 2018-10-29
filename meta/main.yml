@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: haproxy_exporter
   author: Niko Smeds
   description: Prometheus HAProxy Exporter
   license: MIT
