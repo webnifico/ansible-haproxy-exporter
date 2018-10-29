@@ -4,7 +4,7 @@
 
 ## Description
 
-An Ansible Role that installs Prometheus [HAProxy exporter](https://github.com/prometheus/haproxy_exporter).
+Ansible Role for installing Prometheus [HAProxy exporter](https://github.com/prometheus/haproxy_exporter).
 
 ## Role Variables
 
