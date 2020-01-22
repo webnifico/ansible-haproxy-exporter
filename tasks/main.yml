@@ -78,7 +78,7 @@
   no_log: true
   notify: restart haproxy_exporter
 
-- name:  start and enable haproxy_exporter service
+- name: start and enable haproxy_exporter service
   become: true
   systemd:
     name: haproxy_exporter
@@ -91,10 +91,7 @@
     url: http://localhost:9101/metrics
     return_content: yes
   register: metrics
-
-- name: debug
-  debug:
-    var: metrics
+  changed_when: false
 
 - name: fail when haproxy-exporter unable to collect metrics
   fail:
