@@ -1,5 +1,5 @@
 ---
-haproxy_exporter_bin_dir: /opt/haproxy-exporter
+haproxy_exporter_bin_dir: /usr/local/bin
 haproxy_exporter_development_node: False
 haproxy_exporter_listen_port: 9101
 haproxy_exporter_log_level: "info"

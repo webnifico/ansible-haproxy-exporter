@@ -34,15 +34,6 @@
     state: "{{ haproxy_exporter_state }}"
     system: true
 
-- name: create haproxy_exporter directory
-  become: true
-  file:
-    path: "{( haproxy_exporter_bin_dir }}"
-    state: directory
-    owner: "{{ haproxy_exporter_system_user }}"
-    group: "{{ haproxy_exporter_system_group }}"
-    mode: '0644'
-
 - name: ensure tar is installed
   package:
     name: tar
@@ -52,7 +43,7 @@
   become: true
   get_url:
     url: "https://github.com/prometheus/haproxy_exporter/releases/download/v{{ haproxy_exporter_version }}/haproxy_exporter-{{ haproxy_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
-    dest: "{{ haproxy_exporter_bin_dir }}/haproxy_exporter-{{ haproxy_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
+    dest: "/tmp/haproxy_exporter-{{ haproxy_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
     checksum: "sha256:{{ __haproxy_exporter_checksum }}"
   register: _download_binary
   until: _download_binary is succeeded
@@ -61,10 +52,20 @@
 
 - name: unarchive haproxy_exporter binary
   unarchive:
-    src: "{{ haproxy_exporter_bin_dir }}/haproxy_exporter-{{ haproxy_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
-    dest: "{{ haproxy_exporter_bin_dir }}"
+    src: "/tmp/haproxy_exporter-{{ haproxy_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
+    dest: /tmp
     remote_src: true
     creates: "{{ haproxy_exporter_bin_dir }}/haproxy_exporter-{{ haproxy_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}/haproxy_exporter"
+
+- name: propagate haproxy_exporter binary
+  become: true
+  copy:
+    src: "/tmp/haproxy_exporter-{{ haproxy_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}/haproxy_exporter"
+    dest: "{{ haproxy_exporter_bin_dir}}/haproxy_exporter"
+    remote_src: true
+    mode: 0750
+    owner: "{{ haproxy_exporter_system_user }}"
+    group: "{{ haproxy_exporter_system_group }}"
   notify: restart haproxy_exporter
 
 - name: copy haproxy_exporter systemd service file
@@ -91,7 +92,6 @@
     url: http://localhost:9101/metrics
     return_content: yes
   register: metrics
-  changed_when: false
 
 - name: fail when haproxy-exporter unable to collect metrics
   fail:
