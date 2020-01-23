@@ -12,7 +12,7 @@
       systemd: 
         name: haproxy
         state: started
-        enabled: yes
+        enabled: true
   when:
     - haproxy_exporter_development_node
 
@@ -35,12 +35,12 @@
     system: true
 
 - name: ensure tar is installed
-  become: true
   package:
     name: tar
     state: present
 
-- name: download haproxy_exporter binary to local folder
+- name: download haproxy_exporter binary
+  become: true
   get_url:
     url: "https://github.com/prometheus/haproxy_exporter/releases/download/v{{ haproxy_exporter_version }}/haproxy_exporter-{{ haproxy_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
     dest: "/tmp/haproxy_exporter-{{ haproxy_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
@@ -49,22 +49,20 @@
   until: _download_binary is succeeded
   retries: 5
   delay: 2
-  delegate_to: localhost
-  check_mode: False
 
 - name: unarchive haproxy_exporter binary
   unarchive:
     src: "/tmp/haproxy_exporter-{{ haproxy_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
     dest: /tmp
-    creates: "/tmp/haproxy_exporter-{{ haproxy_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}/haproxy_exporter"
-  delegate_to: localhost
-  check_mode: False
+    remote_src: true
+    creates: "{{ haproxy_exporter_bin_dir }}/haproxy_exporter-{{ haproxy_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}/haproxy_exporter"
 
 - name: propagate haproxy_exporter binary
   become: true
   copy:
     src: "/tmp/haproxy_exporter-{{ haproxy_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}/haproxy_exporter"
     dest: "{{ haproxy_exporter_bin_dir}}/haproxy_exporter"
+    remote_src: true
     mode: 0750
     owner: "{{ haproxy_exporter_system_user }}"
     group: "{{ haproxy_exporter_system_group }}"
@@ -78,23 +76,22 @@
     owner: root
     group: root
     mode: 0644
-  # Prevent Ansible from displaying password
   no_log: true
   notify: restart haproxy_exporter
 
-- name: ensure haproxy_exporter is enabled
+- name: start and enable haproxy_exporter service
   become: true
   systemd:
     name: haproxy_exporter
     enabled: "{{ haproxy_exporter_service_enabled }}"
     state: "{{ haproxy_exporter_service_state }}"
+    daemon_reload: true
 
 - name: curl haproxy-exporter metrics
   uri:
     url: http://localhost:9101/metrics
     return_content: yes
   register: metrics
-  check_mode: no
 
 - name: fail when haproxy-exporter unable to collect metrics
   fail:

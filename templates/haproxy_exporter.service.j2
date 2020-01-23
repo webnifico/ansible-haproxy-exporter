@@ -15,7 +15,6 @@ ExecStart={{ haproxy_exporter_bin_dir}}/haproxy_exporter \
 {% endif %}
     --web.listen-address=":{{ haproxy_exporter_listen_port }}" \
     --haproxy.scrape-uri="{{ haproxy_exporter_scrape_uri }}" \
-    --haproxy.server-metric-fields="{{ haproxy_exporter_server_metric_fields }}" \
     --haproxy.timeout={{ haproxy_exporter_timeout }} \
     --haproxy.pid-file="{{ haproxy_exporter_pid_file }}" \
     --log.level="{{ haproxy_exporter_log_level }}"
