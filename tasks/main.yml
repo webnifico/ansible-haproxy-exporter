@@ -87,6 +87,9 @@
     state: "{{ haproxy_exporter_service_state }}"
     daemon_reload: true
 
+- name: flush handlers prior to running tests
+  meta: flush_handlers
+
 - name: curl haproxy-exporter metrics
   uri:
     url: http://localhost:9101/metrics
