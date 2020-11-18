@@ -92,7 +92,7 @@
 
 - name: curl haproxy-exporter metrics
   uri:
-    url: http://localhost:9101/metrics
+    url: http://{{ haproxy_exporter_listen_address }}:{{ haproxy_exporter_listen_port }}/metrics
     return_content: yes
   register: metrics
 

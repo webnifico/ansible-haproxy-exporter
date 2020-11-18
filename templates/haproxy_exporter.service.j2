@@ -13,7 +13,7 @@ ExecStart={{ haproxy_exporter_bin_dir}}/haproxy_exporter \
 {% if not haproxy_exporter_ssl_verify %}
     --no-haproxy.ssl-verify \
 {% endif %}
-    --web.listen-address=:{{ haproxy_exporter_listen_port }} \
+    --web.listen-address={{ haproxy_exporter_listen_address }}:{{ haproxy_exporter_listen_port }} \
     --haproxy.scrape-uri={{ haproxy_exporter_scrape_uri }} \
     --haproxy.timeout={{ haproxy_exporter_timeout }} \
     --haproxy.pid-file={{ haproxy_exporter_pid_file }} \
